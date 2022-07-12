@@ -1,11 +1,11 @@
 <template>
   <el-container>
-    <el-aside width="200px">
+    <el-aside :style="{ width: flag ? '49px' : '200px' }">
       <AppAside></AppAside>
     </el-aside>
     <el-container>
       <el-header>
-        <AppHeader></AppHeader>
+        <AppHeader :flag="flag" @fold="ic"></AppHeader>
       </el-header>
       <el-main>
         <AppMain></AppMain>
@@ -24,6 +24,16 @@ export default {
     AppAside,
     AppMain,
     AppHeader
+  },
+  data() {
+    return {
+      flag: false
+    }
+  },
+  methods: {
+    ic() {
+      this.flag = !this.flag
+    }
   }
 }
 </script>

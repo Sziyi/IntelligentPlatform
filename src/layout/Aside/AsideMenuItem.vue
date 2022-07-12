@@ -1,34 +1,42 @@
 <template>
-  <el-menu-item v-if="menu.children && menu.action" :index="menu.path">
-    <el-icon><location /></el-icon><span>{{ menu.label }}</span>
-  </el-menu-item>
-
-  <el-sub-menu v-else :index="menu.path">
-    <template #title>
-      <el-icon><document /></el-icon><span>{{ menu.label }}</span>
+  <el-submenu
+    :index="data.path"
+    v-if="data.children.length != 0 && data.component === null"
+  >
+    <template slot="title">
+      <i :class="'el-icon-' + data.icon"></i>
+      <span slot="title">{{ data.label }}</span>
     </template>
     <AsideMenuItem
-      v-for="child in menu.children"
-      :menu="child"
-      :key="child"
+      v-for="(item, index) in data.children"
+      :key="index"
+      :data="item"
     ></AsideMenuItem>
-  </el-sub-menu>
+  </el-submenu>
+  <el-menu-item-group v-else>
+    <el-menu-item :index="data.path">
+      <i :class="'el-icon-' + data.icon"></i>
+      <span slot="title"> {{ data.label }}</span>
+    </el-menu-item>
+  </el-menu-item-group>
 </template>
 
 <script>
-import AsideMenuItem from './AsideMenuItem.vue'
 export default {
-  components: {
-    AsideMenuItem
-  },
-  props: ['menu'],
+  name: 'AsideMenuItem',
+  props: ['data'],
   data() {
     return {}
   },
-  computed: {},
+
   mounted() {},
+
   methods: {}
 }
 </script>
 
-<style scoped></style>
+<style lang="scss" scoped>
+.el-menu-item-group__title {
+  padding: none;
+}
+</style>

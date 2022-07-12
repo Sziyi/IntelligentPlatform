@@ -25,9 +25,9 @@ const login = (data) => {
 }
 
 // 左侧菜单兰
-const nav = () => {
+const menu = () => {
   return request({
-    url: '/menu/list',
+    url: '/menu/nav',
     method: 'GET'
   })
 }
@@ -43,6 +43,6 @@ const logout = () => {
 export default {
   getCaptcha,
   login,
-  nav,
+  menu,
   logout
 }

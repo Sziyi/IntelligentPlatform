@@ -1,12 +1,23 @@
 <template>
-  <div>
+  <div class="header">
     <div class="l">
-      <i class="el-icon-s-unfold" v-show="icon" @click="ic"></i>
-      <i class="el-icon-s-fold" v-show="!icon" @click="ic"></i>
+      <div
+        :class="flag ? 'el-icon-s-unfold ' : 'el-icon-s-fold'"
+        @click="fold"
+      ></div>
     </div>
     <div class="r">
-      <i class="el-icon-rank"></i>
-      <i class="el-icon-error"></i>
+      <el-tooltip class="item" effect="dark" content="全屏" placement="bottom">
+        <i class="el-icon-rank" @click="screen"></i>
+      </el-tooltip>
+      <el-tooltip
+        class="item"
+        effect="dark"
+        content="关闭全部标签"
+        placement="bottom"
+      >
+        <i class="el-icon-error"></i>
+      </el-tooltip>
       <div class="t"></div>
       <el-dropdown @command="handleCommand">
         <span class="el-dropdown-link">
@@ -14,7 +25,7 @@
         </span>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item command="a">个人设置</el-dropdown-item>
-          <el-dropdown-item command="b">安全退出</el-dropdown-item>
+          <el-dropdown-item command="error">安全退出</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
@@ -22,16 +33,31 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 export default {
+  props: ['flag'],
   data() {
     return {
       icon: false,
-      isCollapse: true
+      isCollapse: true,
+      fullscreen: false
     }
   },
-  mounted() {},
+  mounted() {
+    this.getlist()
+  },
   methods: {
-    handleCommand(command = 'b') {
+    ...mapActions(['user/tc', 'login/logout']),
+    async getlist() {
+      await this['user/tc']()
+    },
+    handleCommand(command) {
+      if (command === 'error') {
+        this.exitLogin()
+      }
+    },
+    // 退出登录
+    exitLogin() {
       // alert('退出')
       this.$confirm('您确定要退出系统吗？', '提示', {
         confirmButtonText: '确定',
@@ -39,13 +65,12 @@ export default {
         type: 'warning'
       })
         .then(() => {
+          this['user/logout']()
           this.$notify({
             title: '提示',
             message: '正在退出...',
             type: 'success'
           })
-          localStorage.removeItem('token')
-          this.$router.push('/login')
         })
         .catch(() => {
           this.$message({
@@ -54,16 +79,46 @@ export default {
           })
         })
     },
-    ic() {
-      this.icon = !this.icon
+    // 侧边栏收缩
+    fold() {
+      this.$emit('fold')
+    },
+    // 全屏
+    screen() {
+      const element = document.documentElement
+      if (this.fullscreen) {
+        if (document.exitFullscreen) {
+          document.exitFullscreen()
+        } else if (document.webkitCancelFullScreen) {
+          document.webkitCancelFullScreen()
+        } else if (document.mozCancelFullScreen) {
+          document.mozCancelFullScreen()
+        } else if (document.msExitFullscreen) {
+          document.msExitFullscreen()
+        }
+      } else {
+        if (element.requestFullscreen) {
+          element.requestFullscreen()
+        } else if (element.webkitRequestFullScreen) {
+          element.webkitRequestFullScreen()
+        } else if (element.mozRequestFullScreen) {
+          element.mozRequestFullScreen()
+        } else if (element.msRequestFullscreen) {
+          element.msRequestFullscreen()
+        }
+      }
+      this.fullscreen = !this.fullscreen
     }
   }
 }
 </script>
 
 <style scoped lang="scss">
+.header {
+  display: flex;
+}
 .l {
-  width: 78%;
+  flex: 1;
   // background-color: aqua;
   float: left;
   .el-icon-s-fold,
@@ -73,7 +128,7 @@ export default {
   }
 }
 .r {
-  width: 22%;
+  width: 190px;
   height: 60px;
   float: right;
   .el-icon-rank,

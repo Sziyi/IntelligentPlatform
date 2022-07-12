@@ -1,39 +1,54 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-
 Vue.use(VueRouter)
-
 const routes = [
+  {
+    path: '/',
+    component: () => import('@/layout/index'),
+    meta: {
+      title: '控制台'
+    },
+    children: [
+      {
+        path: '/',
+        component: () => import('../views/home')
+      }
+    ]
+  },
   {
     path: '/login',
     name: 'login',
     component: () => import('../views/login')
   },
   {
-    path: '/',
-    name: 'layout',
-    component: () => import('../layout'),
+    path: '/sys',
+    name: 'sys',
+    component: () => import('@/layout'),
     redirect: '/home',
+    meta: {
+      title: '系统管理'
+    },
     children: [
       {
-        path: '/home',
-        name: '/home',
-        component: () => import('../views/home')
+        path: '/sys/users',
+        component: () => import('../views/sysUsers'),
+        meta: {
+          title: '用户管理'
+        }
       },
       {
-        path: '/users',
-        name: '/users',
-        component: () => import('../views/sysUsers')
+        path: '/sys/menus',
+        component: () => import('../views/sysMenus'),
+        meta: {
+          title: '菜单管理'
+        }
       },
       {
-        path: '/menus',
-        name: '/menus',
-        component: () => import('../views/sysMenus')
-      },
-      {
-        path: '/roles',
-        name: '/roles',
-        component: () => import('../views/sysRoles')
+        path: '/sys/roles',
+        component: () => import('../views/sysRoles'),
+        meta: {
+          title: '角色管理'
+        }
       }
     ]
   }
