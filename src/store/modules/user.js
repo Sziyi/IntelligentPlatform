@@ -17,6 +17,11 @@ export default {
       const token = await UserApi.login(loginForm)
       commit('setToken', token)
       return token
+    },
+    async nav({ commit }) {
+      const response = await UserApi.nav()
+      console.log('vuex=>1111', response)
+      return response
     }
   }
 }

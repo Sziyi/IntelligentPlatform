@@ -12,7 +12,30 @@ const routes = [
   {
     path: '/',
     name: 'layout',
-    component: () => import('../layout')
+    component: () => import('../layout'),
+    redirect: '/home',
+    children: [
+      {
+        path: '/home',
+        name: '/home',
+        component: () => import('../views/home')
+      },
+      {
+        path: '/users',
+        name: '/users',
+        component: () => import('../views/sysUsers')
+      },
+      {
+        path: '/menus',
+        name: '/menus',
+        component: () => import('../views/sysMenus')
+      },
+      {
+        path: '/roles',
+        name: '/roles',
+        component: () => import('../views/sysRoles')
+      }
+    ]
   }
 ]
 

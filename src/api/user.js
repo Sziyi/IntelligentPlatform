@@ -24,7 +24,25 @@ const login = (data) => {
   })
 }
 
+// 左侧菜单兰
+const nav = () => {
+  return request({
+    url: '/menu/list',
+    method: 'GET'
+  })
+}
+
+// 退出登录
+const logout = () => {
+  return request({
+    url: '/logout',
+    method: 'POST'
+  })
+}
+
 export default {
   getCaptcha,
-  login
+  login,
+  nav,
+  logout
 }
