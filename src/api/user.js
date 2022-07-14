@@ -39,10 +39,18 @@ const logout = () => {
     method: 'POST'
   })
 }
+// 头像
+const tx = () => {
+  return request({
+    url: '/user/info',
+    method: 'GET'
+  })
+}
 
 export default {
   getCaptcha,
   login,
   menu,
-  logout
+  logout,
+  tx
 }

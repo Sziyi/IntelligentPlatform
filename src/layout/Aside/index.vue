@@ -15,7 +15,7 @@
         :key="index"
         :data="item"
       ></aside-menu>
-        <!-- <el-menu-item index="/home">
+      <!-- <el-menu-item index="/home">
             <i class="el-icon-s-home"></i>
             <span slot="title">控制台</span>
           </el-menu-item>
@@ -46,12 +46,11 @@
 import AsideMenu from './AsideMenuItem'
 import { mapActions } from 'vuex'
 import store from '@/store'
-// import router from '@/router'
+import router from '@/router'
 export default {
   components: {
     AsideMenu
   },
-
   props: ['flag'],
   name: 'index',
   data() {
@@ -71,17 +70,17 @@ export default {
       this.dat = store.state.user.menus
       console.log(store.state.user)
     }
+  },
+  watch: {
+    $route: {
+      handler() {
+        const data = router.currentRoute
+        this.menuPath = data.path
+      },
+      immediate: true,
+      deep: true
+    }
   }
-  // watch: {
-  //   $router: {
-  //     handler() {
-  //       const data = router.currentRoute
-  //       this.menuPath = data.path
-  //     },
-  //     immediate: true,
-  //     deep: true
-  //   }
-  // }
 }
 </script>
 

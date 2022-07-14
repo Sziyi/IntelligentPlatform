@@ -5,6 +5,17 @@
         :class="flag ? 'el-icon-s-unfold ' : 'el-icon-s-fold'"
         @click="fold"
       ></div>
+      <el-tag
+        v-for="(item, index) in $store.state.user.tags"
+        :key="index"
+        type="warning"
+        :closable="item.path != '/'"
+        :class="tagPath === item.path ? 'tags' : 'tag'"
+        @click="$router.push(item.path)"
+        @close="closeTag(item.meta.title)"
+      >
+        {{ item.meta.title }}
+      </el-tag>
     </div>
     <div class="r">
       <el-tooltip class="item" effect="dark" content="全屏" placement="bottom">
@@ -16,12 +27,19 @@
         content="关闭全部标签"
         placement="bottom"
       >
-        <i class="el-icon-error"></i>
+        <i class="el-icon-error" @click="AllError"></i>
       </el-tooltip>
-      <div class="t"></div>
+      <div class="t">
+        <el-avatar
+          :size="40"
+          :src="$store.state.user.avatar"
+          class="avatar"
+        ></el-avatar>
+      </div>
       <el-dropdown @command="handleCommand">
         <span class="el-dropdown-link">
-          duck<i class="el-icon-arrow-down el-icon--right"></i>
+          <b> {{ $store.state.user.nameInfo }} </b>
+          <i class="el-icon-arrow-down el-icon--right"></i>
         </span>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item command="a">个人设置</el-dropdown-item>
@@ -34,29 +52,37 @@
 
 <script>
 import { mapActions } from 'vuex'
+import router from '@/router'
 export default {
   props: ['flag'],
   data() {
+    // 菜单栏显示隐藏的图标按钮   大屏
     return {
       icon: false,
-      isCollapse: true,
-      fullscreen: false
+      fullscreen: false,
+      tagPath: ''
     }
   },
   mounted() {
-    this.getlist()
+    this.getList()
   },
   methods: {
-    ...mapActions(['user/tc', 'login/logout']),
-    async getlist() {
-      await this['user/tc']()
+    ...mapActions([
+      'user/img',
+      'user/logout',
+      'user/closeTags',
+      'user/allTags'
+    ]),
+    // 退出登录接口
+    async getList() {
+      await this['user/img']()
     },
     handleCommand(command) {
       if (command === 'error') {
         this.exitLogin()
       }
     },
-    // 退出登录
+    // 点击退出登录按钮
     exitLogin() {
       // alert('退出')
       this.$confirm('您确定要退出系统吗？', '提示', {
@@ -108,6 +134,27 @@ export default {
         }
       }
       this.fullscreen = !this.fullscreen
+    },
+    // 关闭标签
+    closeTag(name) {
+      this['user/closeTags'](name)
+      if (router.currentRoute.meta.title === name) {
+        router.push('/')
+      }
+    },
+    AllError() {
+      this['user/allTags']()
+      router.push('/')
+    }
+  },
+  watch: {
+    $route: {
+      handler() {
+        const data = router.currentRoute
+        this.tagPath = data.path
+      },
+      immediate: true,
+      deep: true
     }
   }
 }
@@ -125,10 +172,24 @@ export default {
   .el-icon-s-unfold {
     font-size: 23px;
     color: #fff;
+    margin-right: 15px;
   }
 }
+.el-tag {
+  margin: 0 7px;
+}
+.tags {
+  background-color: #e6a23c;
+  color: #fff;
+  border: 0;
+}
+.tag {
+  background-color: #fff;
+  color: #e6a23c;
+  border: 0.2px solid #f5dab1;
+}
 .r {
-  width: 190px;
+  width: 200px;
   height: 60px;
   float: right;
   .el-icon-rank,

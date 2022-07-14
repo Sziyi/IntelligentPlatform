@@ -24,7 +24,7 @@ const routes = [
     path: '/sys',
     name: 'sys',
     component: () => import('@/layout'),
-    redirect: '/home',
+    redirect: '/sys/users',
     meta: {
       title: '系统管理'
     },

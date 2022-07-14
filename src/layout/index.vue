@@ -1,6 +1,6 @@
 <template>
   <el-container>
-    <el-aside :style="{ width: flag ? '49px' : '200px' }">
+    <el-aside :style="{ width: flag ? '45px' : '200px' }">
       <AppAside></AppAside>
     </el-aside>
     <el-container>
